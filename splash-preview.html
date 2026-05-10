@@ -29,20 +29,20 @@
       z-index: 0;
     }
 
-    /* Dark gradient overlay — keeps logo + tagline legible on top of photo */
+    /* Multicolor gradient overlay — matches the brand CTA button (indigo → purple → magenta) */
     .bg-overlay {
       position: absolute;
       inset: 0;
       background:
         radial-gradient(ellipse at center,
-          rgba(15, 10, 46, 0.55) 0%,
-          rgba(15, 10, 46, 0.85) 55%,
-          rgba(15, 10, 46, 0.97) 100%),
-        linear-gradient(180deg,
-          rgba(123, 63, 228, 0.18) 0%,
-          rgba(15, 10, 46, 0.0) 30%,
-          rgba(15, 10, 46, 0.0) 70%,
-          rgba(168, 85, 247, 0.18) 100%);
+          rgba(15, 10, 46, 0.35) 0%,
+          rgba(15, 10, 46, 0.78) 60%,
+          rgba(15, 10, 46, 0.95) 100%),
+        linear-gradient(135deg,
+          rgba(91,  61, 240, 0.55) 0%,
+          rgba(123, 63, 228, 0.55) 35%,
+          rgba(168, 85, 247, 0.55) 65%,
+          rgba(217, 70, 239, 0.55) 100%);
       z-index: 1;
     }
 
@@ -83,17 +83,23 @@
       transform: translate(-50%, -50%);
       color: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: clamp(18px, 3vw, 28px);
+      font-size: clamp(20px, 3.4vw, 32px);
       font-weight: 400;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
+      line-height: 1.15;
       white-space: nowrap;
       opacity: 0;
       transition: opacity 0.6s ease-out;
       pointer-events: none;
       text-shadow: 0 0 20px rgba(123, 63, 228, 0.6);
       z-index: 4;
+      text-align: left;
+      display: inline-block;
     }
     .tagline.visible { opacity: 1; }
+    .tagline .line { display: block; }
+    /* Second line is offset to the right to mirror the app header style */
+    .tagline .line.indent { padding-left: 1.6em; }
     .tagline em { font-style: italic; font-weight: 500; }
     .stage.light .tagline { color: #1d1645; text-shadow: none; }
 
@@ -117,7 +123,10 @@
         <path d="M63.52,2.06c-19.81,0-35.86,15.59-35.86,34.81s15.95,34.71,35.67,34.81h.38c19.72-.1,35.67-15.65,35.67-34.81S83.33,2.06,63.52,2.06M62.82,60.34c-12.47-.34-22.78-10.07-23.45-22.16-.62-11.17,6.81-20.75,17.17-23.78.19-.06.39-.05.58.01.6.2,1.28.66,1.83,1.63,1.65,2.92,2.3,6.38-.38,9-1.01.99-2.29,1.67-3.35,2.6-.94.82-1.77,1.72-2.43,2.77-1.42,2.21-2.07,4.83-1.87,7.43.02.24.05.49.08.73.77,5.7,5.4,10.02,11.3,10.57,7.57.71,13.94-5.04,13.94-12.24,0-2.56-.84-5.09-2.38-7.17-.75-1.01-1.65-1.91-2.68-2.64-2.88-2.03-5.4-4.31-4.01-8.97.21-.7.55-1.37.95-1.99.02-.03.04-.06.06-.08.56-1,1.27-1.45,1.87-1.63.15-.05.31-.05.46,0,9.96,2.9,17.22,11.86,17.22,22.48,0,12.96-10.83,23.47-24.18,23.47-.23,0-.46,0-.7,0"/>
       </svg>
     </div>
-    <div class="tagline" id="tagline">Charge <em>faster</em> Drive longer</div>
+    <div class="tagline" id="tagline">
+      <span class="line">Charge <em>faster</em></span>
+      <span class="line indent">Drive longer</span>
+    </div>
   </div>
   <div class="controls">
     <button id="play">Play</button>
