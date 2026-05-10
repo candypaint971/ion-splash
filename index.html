@@ -8,12 +8,12 @@
   <meta name="description" content="ION mobile app splash — premium animated reveal." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500&display=swap">
   <style>
     :root { color-scheme: dark; }
     html, body { height: 100%; margin: 0; }
     body {
-      font-family: 'Manrope', -apple-system, system-ui, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
       background: #0F0A2E;
       color: #fff;
       overflow: hidden;
@@ -208,14 +208,13 @@
       position: absolute;
       left: 50%;
       top: calc(60% + 20px);
-      transform: translateX(-50%) translateY(-50%);
-      width: min(220px, 48vw);
+      width: max-content;
       color: #ffffff;
-      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: clamp(22px, 3.6vw, 34px);
-      font-weight: 200;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: clamp(20px, 3.4vw, 32px);
+      font-weight: 300;
       letter-spacing: 0.01em;
-      line-height: 1.15;
+      line-height: 1.25;
       white-space: nowrap;
       opacity: 0;
       transform: translateX(-50%) translateY(calc(-50% + 10px));
@@ -224,7 +223,7 @@
       pointer-events: none;
       text-shadow: 0 0 20px rgba(123, 63, 228, 0.6);
       z-index: 5;
-      text-align: right;
+      text-align: left;
     }
     .tagline.visible {
       opacity: 1;
@@ -232,13 +231,13 @@
     }
     .tagline .line {
       display: block;
-      min-height: 1.15em;
+      min-height: 1.25em;
       box-sizing: border-box;
     }
-    .tagline .line.indent { padding-right: 0; }
+    .tagline .line.indent { padding-left: 4em; }
     .tagline em {
       font-style: italic;
-      font-weight: 600;
+      font-weight: 500;
       color: #C77DFF;
       text-shadow: 0 0 12px rgba(199, 125, 255, 0.55);
     }
@@ -250,7 +249,7 @@
       bottom: max(12px, env(safe-area-inset-bottom));
       text-align: center;
       color: rgba(255, 255, 255, 0.3);
-      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: clamp(13px, 1.8vw, 16px);
       font-weight: 500;
       letter-spacing: 0.06em;
