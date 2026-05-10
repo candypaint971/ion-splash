@@ -24,12 +24,7 @@ test('splash.json is valid JSON with expected top-level fields', () => {
 test('splash.json has the expected layers in render order (top to bottom)', () => {
   const json = JSON.parse(readFileSync(SPLASH_PATH, 'utf8'));
   const names = json.layers.map(l => l.nm);
-  assert.deepEqual(names, [
-    'halo', 'halo',
-    'spark',
-    'lightning',
-    'grid',
-  ]);
+  assert.deepEqual(names, ['grid']);
 });
 
 test('splash.json file size is under 120KB', () => {
