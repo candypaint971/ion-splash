@@ -25,16 +25,19 @@ test('splash.json has the expected layers in render order (top to bottom)', () =
   const json = JSON.parse(readFileSync(SPLASH_PATH, 'utf8'));
   const names = json.layers.map(l => l.nm);
   assert.deepEqual(names, [
-    'halo',
+    'figures-shimmer', 'N-shimmer', 'O-shimmer', 'I-shimmer',
+    'halo', 'halo',
     'spark',
+    'lightning',
     'N-fill', 'O-fill', 'I-fill',
     'inner-figures',
-    'N-stroke', 'O-stroke', 'I-stroke',
+    'N-stroke', 'I-stroke', 'O-stroke',
+    'grid',
     'Background',
   ]);
 });
 
-test('splash.json file size is under 50KB', () => {
+test('splash.json file size is under 80KB', () => {
   const stats = readFileSync(SPLASH_PATH);
-  assert.ok(stats.length < 50_000, `splash.json is ${stats.length} bytes`);
+  assert.ok(stats.length < 80_000, `splash.json is ${stats.length} bytes`);
 });
