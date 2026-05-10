@@ -20,39 +20,100 @@
       background: #0F0A2E;
     }
 
-    /* Background photo (drop /assets/station.jpg here to enable) */
+    /* Background station photo */
     .bg-photo {
       position: absolute;
       inset: 0;
       background-image: url('./assets/station.jpg');
       background-size: cover;
       background-position: center;
-      opacity: 0.55;
-      filter: saturate(1.05) contrast(1.05);
+      opacity: 0.65;
+      filter: saturate(1.1) contrast(1.05);
       z-index: 0;
     }
 
-    /* Multicolor gradient overlay — matches the brand CTA button (indigo → purple → magenta) */
-    .bg-overlay {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at center,
-          rgba(15, 10, 46, 0.35) 0%,
-          rgba(15, 10, 46, 0.78) 60%,
-          rgba(15, 10, 46, 0.95) 100%),
-        linear-gradient(135deg,
-          rgba(91,  61, 240, 0.55) 0%,
-          rgba(123, 63, 228, 0.55) 35%,
-          rgba(168, 85, 247, 0.55) 65%,
-          rgba(217, 70, 239, 0.55) 100%);
-      z-index: 1;
+    /* ── Aceternity-style animated gradient blobs ── */
+    @keyframes moveVertical {
+      from { transform: translateY(-50%); }
+      to   { transform: translateY(50%); }
+    }
+    @keyframes moveInCircle {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes moveHorizontal {
+      from { transform: translateX(-50%) translateY(-10%); }
+      to   { transform: translateX(50%) translateY(10%); }
     }
 
-    /* Lottie effects layer (lightning, halo, grid, shimmer) */
+    .gradients-container {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .blob {
+      position: absolute;
+      width: 80%;
+      height: 80%;
+      top: 10%;
+      left: 10%;
+      mix-blend-mode: hard-light;
+      filter: blur(60px);
+      opacity: 1;
+    }
+    .blob-1 {
+      background: radial-gradient(circle at center, rgba(74, 29, 184, 0.90) 0, transparent 60%);
+      transform-origin: 15% 50%;
+      animation: moveVertical 10s ease-in-out alternate infinite;
+    }
+    .blob-2 {
+      background: radial-gradient(circle at center, rgba(199, 125, 255, 0.90) 0, transparent 60%);
+      transform-origin: 85% 50%;
+      animation: moveInCircle 7s linear reverse infinite;
+    }
+    .blob-3 {
+      background: radial-gradient(circle at center, rgba(91, 33, 208, 0.85) 0, transparent 60%);
+      transform-origin: 50% 15%;
+      animation: moveInCircle 12s linear infinite;
+    }
+    .blob-4 {
+      background: radial-gradient(circle at center, rgba(217, 70, 239, 0.80) 0, transparent 60%);
+      transform-origin: 85% 85%;
+      animation: moveHorizontal 9s ease-in-out alternate infinite;
+    }
+    .blob-5 {
+      background: radial-gradient(circle at center, rgba(168, 85, 247, 0.85) 0, transparent 60%);
+      transform-origin: 15% 85%;
+      animation: moveInCircle 6s linear infinite;
+    }
+    .blob-6 {
+      background: radial-gradient(circle at center, rgba(45, 12, 150, 0.80) 0, transparent 55%);
+      transform-origin: 50% 85%;
+      animation: moveHorizontal 11s ease-in-out alternate-reverse infinite;
+    }
+    .blob-7 {
+      background: radial-gradient(circle at center, rgba(139, 40, 255, 0.75) 0, transparent 55%);
+      transform-origin: 20% 20%;
+      animation: moveInCircle 8s linear reverse infinite;
+    }
+
+    /* Dark vignette — darkens edges so logo + text stay readable */
+    .bg-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: radial-gradient(ellipse at center,
+        transparent 0%,
+        rgba(10, 5, 30, 0.45) 55%,
+        rgba(10, 5, 30, 0.92) 100%);
+      pointer-events: none;
+    }
+
+    /* Lottie effects layer */
     #anim {
       position: relative;
-      z-index: 2;
+      z-index: 3;
       width: min(360px, 80vw);
       aspect-ratio: 1080 / 1920;
     }
@@ -67,7 +128,7 @@
       transform: translate(-50%, -50%);
       width: min(220px, 48vw);
       aspect-ratio: 173.3 / 73.75;
-      z-index: 3;
+      z-index: 4;
       filter: drop-shadow(0 0 24px rgba(123, 63, 228, 0));
       pointer-events: none;
       transition: filter 0.5s ease-out;
@@ -99,7 +160,8 @@
       position: absolute;
       left: 50%;
       top: calc(60% + 20px);
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%) translateY(-50%);
+      width: min(220px, 48vw);
       color: #ffffff;
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: clamp(22px, 3.6vw, 34px);
@@ -111,19 +173,17 @@
       transition: opacity 0.6s ease-out;
       pointer-events: none;
       text-shadow: 0 0 20px rgba(123, 63, 228, 0.6);
-      z-index: 4;
-      text-align: left;
-      display: inline-block;
+      z-index: 5;
+      text-align: right;
     }
     .tagline.visible { opacity: 1; }
     .tagline .line {
       display: block;
       min-height: 1.15em;
       box-sizing: border-box;
-      text-align: left;
     }
-    /* Second line is offset to the right to mirror the app header style */
-    .tagline .line.indent { padding-left: 1.6em; }
+    /* Second line naturally indents since "Drive longer" is shorter — right-aligned stagger */
+    .tagline .line.indent { padding-right: 0; }
     /* Vibrant purple emphasis on "faster" */
     .tagline em {
       font-style: italic;
@@ -142,11 +202,11 @@
       text-align: center;
       color: rgba(255, 255, 255, 0.3);
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: clamp(11px, 1.4vw, 14px);
-      font-weight: 300;
+      font-size: clamp(13px, 1.8vw, 16px);
+      font-weight: 500;
       letter-spacing: 0.06em;
       pointer-events: none;
-      z-index: 4;
+      z-index: 5;
     }
     .stage.light .app-version { color: rgba(29, 22, 69, 0.4); }
     .credit {
@@ -155,15 +215,15 @@
       right: 0;
       bottom: 16px;
       text-align: center;
-      color: rgba(255, 255, 255, 0.22);
+      color: rgba(255, 255, 255, 0.28);
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: clamp(9px, 1vw, 11px);
-      font-weight: 300;
+      font-size: clamp(12px, 1.6vw, 15px);
+      font-weight: 500;
       letter-spacing: 0.08em;
       pointer-events: none;
-      z-index: 4;
+      z-index: 5;
     }
-    .credit .heart { color: #FF5C8A; opacity: 0.9; }
+    .credit .heart { color: #C77DFF; opacity: 0.9; }
     .stage.light .credit { color: rgba(29, 22, 69, 0.35); }
 
     .controls { padding: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: #000; }
@@ -176,7 +236,16 @@
 <body>
   <div class="stage" id="stage">
     <div class="bg-photo"></div>
-    <div class="bg-overlay"></div>
+    <div class="gradients-container">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="blob blob-4"></div>
+      <div class="blob blob-5"></div>
+      <div class="blob blob-6"></div>
+      <div class="blob blob-7"></div>
+    </div>
+    <div class="bg-vignette"></div>
     <div id="anim"></div>
     <div class="logo-overlay" id="logo">
       <!-- Layer 1: faint outline of the logo silhouette (always visible) -->
