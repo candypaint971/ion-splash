@@ -20,7 +20,11 @@
       background: #0F0A2E;
     }
 
-    /* Background station photo */
+    /* Background station photo — Ken Burns zoom-out on load */
+    @keyframes photoReveal {
+      from { transform: scale(1.35) translate(2.5%, 1.5%); }
+      to   { transform: scale(1.0)  translate(0%,   0%);   }
+    }
     .bg-photo {
       position: absolute;
       inset: 0;
@@ -30,6 +34,7 @@
       opacity: 0.65;
       filter: saturate(1.1) contrast(1.05);
       z-index: 0;
+      animation: photoReveal 8s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
     }
 
     /* ── Aceternity-style animated gradient blobs ── */
@@ -364,6 +369,11 @@
       clearTagline();
       document.getElementById('tagline').classList.remove('visible');
       document.getElementById('logo').classList.remove('visible');
+      // Re-trigger the photo zoom-out by resetting the animation
+      const photo = document.querySelector('.bg-photo');
+      photo.style.animation = 'none';
+      photo.offsetHeight; // force reflow
+      photo.style.animation = '';
       anim.goToAndStop(0, true);
       anim.play();
     };
