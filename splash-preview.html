@@ -27,19 +27,19 @@
 
     /* Background station photo — Ken Burns zoom-out on load */
     @keyframes photoReveal {
-      from { transform: scale(1.35) translate(2.5%, 1.5%); }
-      to   { transform: scale(1.0)  translate(0%,   0%);   }
+      from { transform: scale(1.6); background-position: 85% 50%; }
+      to   { transform: scale(1.0); background-position: 35% 50%; }
     }
     .bg-photo {
       position: absolute;
       inset: 0;
       background-image: url('./assets/station-2.jpg');
       background-size: cover;
-      background-position: 65% center;
-      opacity: 0.30;
+      background-position: 35% 50%;
+      opacity: 0.20;
       filter: saturate(1.1) contrast(1.05);
       z-index: 0;
-      animation: photoReveal 8s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+      animation: photoReveal 8s cubic-bezier(0.45, 0, 0.55, 1) forwards;
     }
 
     /* ── Aceternity-style animated gradient blobs ── */
@@ -220,7 +220,7 @@
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 42px;
+      bottom: 12px;
       text-align: center;
       color: rgba(255, 255, 255, 0.3);
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -231,22 +231,6 @@
       z-index: 5;
     }
     .stage.light .app-version { color: rgba(29, 22, 69, 0.4); }
-    .credit {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 16px;
-      text-align: center;
-      color: rgba(255, 255, 255, 0.28);
-      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: clamp(12px, 1.6vw, 15px);
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      pointer-events: none;
-      z-index: 5;
-    }
-    .credit .heart { color: #C77DFF; opacity: 0.9; }
-    .stage.light .credit { color: rgba(29, 22, 69, 0.35); }
 
     .controls { padding: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: #000; }
     button { padding: 8px 14px; border: 1px solid #444; background: #1d1645; color: #fff; border-radius: 6px; cursor: pointer; font-size: 14px; }
@@ -288,7 +272,6 @@
       <span class="line indent" id="tag-line-2"></span>
     </div>
     <div class="app-version">v1.0.0</div>
-    <div class="credit">Built with <span class="heart">&hearts;</span> in the UAE</div>
   </div>
   <div class="controls">
     <button id="play">Play</button>
