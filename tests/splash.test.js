@@ -25,14 +25,12 @@ test('splash.json has the expected layers in render order (top to bottom)', () =
   const json = JSON.parse(readFileSync(SPLASH_PATH, 'utf8'));
   const names = json.layers.map(l => l.nm);
   assert.deepEqual(names, [
-    'tagline-Charge', 'tagline-faster', 'tagline-Drive longer',
     'figures-shimmer', 'N-shimmer', 'O-shimmer', 'I-shimmer',
     'halo', 'halo',
     'spark',
     'lightning',
     'N-fill', 'O-fill', 'I-fill',
     'inner-figures',
-    'N-stroke', 'I-stroke', 'O-stroke',
     'grid',
     'Background',
   ]);

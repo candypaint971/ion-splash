@@ -102,7 +102,22 @@ export function strokeLayer({ name, path, color, strokeWidth, drawStartFrame, dr
   };
 }
 
-export function fillLayer({ name, path, color, fadeStartFrame, fadeEndFrame, position = [540, 960], scale = 100 }) {
+export function fillLayer({ name, path, color, fadeStartFrame, fadeEndFrame, position = [540, 960], scale = 100, materializeScale = false }) {
+  const scaleProp = materializeScale
+    ? {
+        a: 1,
+        k: [
+          { t: fadeStartFrame, s: [scale * 0.92, scale * 0.92, 100], ...PREMIUM_EASE },
+          { t: fadeEndFrame,   s: [scale, scale, 100] },
+        ],
+      }
+    : {
+        a: 1,
+        k: [
+          { t: fadeStartFrame, s: [scale * 0.95, scale * 0.95, 100], ...PREMIUM_EASE },
+          { t: fadeEndFrame,   s: [scale, scale, 100] },
+        ],
+      };
   return {
     ddd: 0, ind: nextId(), ty: 4, nm: name, sr: 1,
     ks: {
@@ -116,7 +131,7 @@ export function fillLayer({ name, path, color, fadeStartFrame, fadeEndFrame, pos
       r: { a: 0, k: 0 },
       p: { a: 0, k: [position[0], position[1], 0] },
       a: { a: 0, k: [86.65, 36.875, 0] },
-      s: { a: 0, k: [scale, scale, 100] },
+      s: scaleProp,
     },
     ao: 0,
     shapes: [
