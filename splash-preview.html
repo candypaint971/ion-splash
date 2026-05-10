@@ -65,7 +65,7 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: min(280px, 60vw);
+      width: min(220px, 48vw);
       aspect-ratio: 173.3 / 73.75;
       z-index: 3;
       filter: drop-shadow(0 0 24px rgba(123, 63, 228, 0));
@@ -128,20 +128,6 @@
     }
     .stage.light .tagline { color: #1d1645; text-shadow: none; }
     .stage.light .tagline em { color: #7B3FE4; text-shadow: none; }
-    /* Typing caret — blinks at end of currently-typing line */
-    .tagline .caret {
-      display: inline-block;
-      width: 0.06em;
-      height: 1em;
-      margin-left: 0.05em;
-      background: currentColor;
-      vertical-align: -0.12em;
-      opacity: 0.75;
-      animation: blink 0.9s steps(2) infinite;
-    }
-    .tagline .caret.gone { display: none; }
-    @keyframes blink { 50% { opacity: 0; } }
-
     /* App version pinned to the bottom of the stage */
     .app-version {
       position: absolute;
@@ -231,36 +217,16 @@
 
     const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-    function makeCaret() {
-      const c = document.createElement('span');
-      c.className = 'caret';
-      c.textContent = ' '; // non-breaking space so caret has line height
-      return c;
-    }
-
     async function typeInto(lineEl, segments) {
       lineEl.textContent = '';
-      const caret = makeCaret();
-      lineEl.appendChild(caret);
       for (const seg of segments) {
-        const span = document.createElement('span');
-        if (seg.em) {
-          const em = document.createElement('em');
-          span.appendChild(em);
-          for (const ch of seg.text) {
-            em.appendChild(document.createTextNode(ch));
-            lineEl.insertBefore(span, caret);  // ensure caret stays last
-            await sleep(CHAR_DELAY_MS);
-          }
-        } else {
-          for (const ch of seg.text) {
-            span.appendChild(document.createTextNode(ch));
-            lineEl.insertBefore(span, caret);
-            await sleep(CHAR_DELAY_MS);
-          }
+        const wrapper = seg.em ? document.createElement('em') : document.createElement('span');
+        lineEl.appendChild(wrapper);
+        for (const ch of seg.text) {
+          wrapper.appendChild(document.createTextNode(ch));
+          await sleep(CHAR_DELAY_MS);
         }
       }
-      return caret;
     }
 
     function clearTagline() {
@@ -274,12 +240,9 @@
       typingState = 'typing';
       const l1 = document.getElementById('tag-line-1');
       const l2 = document.getElementById('tag-line-2');
-      const caret1 = await typeInto(l1, LINE_1);
-      caret1.classList.add('gone');
+      await typeInto(l1, LINE_1);
       await sleep(LINE_GAP_MS);
-      const caret2 = await typeInto(l2, LINE_2);
-      await sleep(1200);
-      caret2.classList.add('gone');
+      await typeInto(l2, LINE_2);
       typingState = 'done';
     }
 
