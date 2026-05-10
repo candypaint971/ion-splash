@@ -116,11 +116,48 @@
       display: inline-block;
     }
     .tagline.visible { opacity: 1; }
-    .tagline .line { display: block; }
+    .tagline .line { display: block; min-height: 1.15em; }
     /* Second line is offset to the right to mirror the app header style */
     .tagline .line.indent { padding-left: 1.6em; }
-    .tagline em { font-style: italic; font-weight: 400; }
+    /* Vibrant purple emphasis on "faster" */
+    .tagline em {
+      font-style: italic;
+      font-weight: 600;
+      color: #C77DFF;
+      text-shadow: 0 0 12px rgba(199, 125, 255, 0.55);
+    }
     .stage.light .tagline { color: #1d1645; text-shadow: none; }
+    .stage.light .tagline em { color: #7B3FE4; text-shadow: none; }
+    /* Typing caret — blinks at end of currently-typing line */
+    .tagline .caret {
+      display: inline-block;
+      width: 0.06em;
+      height: 1em;
+      margin-left: 0.05em;
+      background: currentColor;
+      vertical-align: -0.12em;
+      opacity: 0.75;
+      animation: blink 0.9s steps(2) infinite;
+    }
+    .tagline .caret.gone { display: none; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* App version pinned to the bottom of the stage */
+    .app-version {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 24px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.3);
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: clamp(11px, 1.4vw, 14px);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      pointer-events: none;
+      z-index: 4;
+    }
+    .stage.light .app-version { color: rgba(29, 22, 69, 0.4); }
 
     .controls { padding: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: #000; }
     button { padding: 8px 14px; border: 1px solid #444; background: #1d1645; color: #fff; border-radius: 6px; cursor: pointer; font-size: 14px; }
@@ -149,9 +186,10 @@
       </svg>
     </div>
     <div class="tagline" id="tagline">
-      <span class="line">Charge <em>faster</em></span>
-      <span class="line indent">Drive longer</span>
+      <span class="line" id="tag-line-1"></span>
+      <span class="line indent" id="tag-line-2"></span>
     </div>
+    <div class="app-version">v1.0.0</div>
   </div>
   <div class="controls">
     <button id="play">Play</button>
@@ -181,16 +219,90 @@
     const scrub = document.getElementById('scrub');
     const frameLabel = document.getElementById('frame');
     anim.addEventListener('DOMLoaded', () => { scrub.max = anim.totalFrames; });
+    // ---- Typewriter for the tagline ----------------------------------------
+    // Two lines, each defined as a list of {text, em} segments. Characters are
+    // typed one at a time across the segments. A blinking caret follows the
+    // active line and disappears when both lines are done.
+    const TYPE_TRIGGER_FRAME = 160;       // Lottie frame at which typing starts
+    const CHAR_DELAY_MS = 55;             // per-character delay
+    const LINE_GAP_MS = 350;              // pause between line 1 and line 2
+    const LINE_1 = [{ text: 'Charge ' }, { text: 'faster', em: true }];
+    const LINE_2 = [{ text: 'Drive longer' }];
+
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    function makeCaret() {
+      const c = document.createElement('span');
+      c.className = 'caret';
+      c.textContent = ' '; // non-breaking space so caret has line height
+      return c;
+    }
+
+    async function typeInto(lineEl, segments) {
+      lineEl.textContent = '';
+      const caret = makeCaret();
+      lineEl.appendChild(caret);
+      for (const seg of segments) {
+        const span = document.createElement('span');
+        if (seg.em) {
+          const em = document.createElement('em');
+          span.appendChild(em);
+          for (const ch of seg.text) {
+            em.appendChild(document.createTextNode(ch));
+            lineEl.insertBefore(span, caret);  // ensure caret stays last
+            await sleep(CHAR_DELAY_MS);
+          }
+        } else {
+          for (const ch of seg.text) {
+            span.appendChild(document.createTextNode(ch));
+            lineEl.insertBefore(span, caret);
+            await sleep(CHAR_DELAY_MS);
+          }
+        }
+      }
+      return caret;
+    }
+
+    function clearTagline() {
+      document.getElementById('tag-line-1').textContent = '';
+      document.getElementById('tag-line-2').textContent = '';
+    }
+
+    let typingState = 'idle'; // 'idle' | 'typing' | 'done'
+    async function runTyping() {
+      if (typingState !== 'idle') return;
+      typingState = 'typing';
+      const l1 = document.getElementById('tag-line-1');
+      const l2 = document.getElementById('tag-line-2');
+      const caret1 = await typeInto(l1, LINE_1);
+      caret1.classList.add('gone');
+      await sleep(LINE_GAP_MS);
+      const caret2 = await typeInto(l2, LINE_2);
+      await sleep(1200);
+      caret2.classList.add('gone');
+      typingState = 'done';
+    }
+
+    // ---- Lottie frame listener: fill animation + typing trigger -----------
     anim.addEventListener('enterFrame', (e) => {
       scrub.value = Math.round(e.currentTime);
       frameLabel.textContent = Math.round(e.currentTime);
 
-      const logo    = document.getElementById('logo');
-      const tagline = document.getElementById('tagline');
+      const logo = document.getElementById('logo');
       // Logo fill rises from bottom to top after a brief "empty" beat
       logo.classList.toggle('visible', e.currentTime >= 18);
-      // Tagline fades in once the fill is mostly complete
-      tagline.classList.toggle('visible', e.currentTime >= 160);
+
+      // Reset typing on loop restart
+      if (e.currentTime < TYPE_TRIGGER_FRAME && typingState !== 'idle') {
+        typingState = 'idle';
+        clearTagline();
+        document.getElementById('tagline').classList.remove('visible');
+      }
+      // Trigger typing once
+      if (e.currentTime >= TYPE_TRIGGER_FRAME && typingState === 'idle') {
+        document.getElementById('tagline').classList.add('visible');
+        runTyping();
+      }
     });
     scrub.addEventListener('input', () => {
       anim.goToAndStop(Number(scrub.value), true);
