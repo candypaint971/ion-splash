@@ -2,7 +2,7 @@
 
 Animated splash screen for the **ION** EV charging mobile app.
 
-**Live preview:** [will be added after first Vercel deploy]
+**Live preview:** https://ion-splash-five.vercel.app
 
 ## What's in the box
 
