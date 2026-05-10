@@ -325,6 +325,47 @@ export function shimmerLayer({ name, path, color, position = [540, 960], scale =
   };
 }
 
+export function taglineLayer({ text, font = 'Helvetica', fontSize = 64, color, position, fadeStartFrame, fadeEndFrame }) {
+  return {
+    ddd: 0, ind: nextId(), ty: 5, nm: `tagline-${text.trim()}`, sr: 1,
+    ks: {
+      o: {
+        a: 1,
+        k: [
+          { t: fadeStartFrame, s: [0],   ...PREMIUM_EASE },
+          { t: fadeEndFrame,   s: [100] },
+        ],
+      },
+      r: { a: 0, k: 0 },
+      p: { a: 0, k: [position[0], position[1], 0] },
+      a: { a: 0, k: [0, 0, 0] },
+      s: { a: 0, k: [100, 100, 100] },
+    },
+    ao: 0,
+    t: {
+      d: {
+        k: [{
+          s: {
+            s: fontSize,
+            f: font,
+            t: text,
+            j: 2,                  // 2 = center justify
+            tr: 0,
+            lh: fontSize * 1.2,
+            ls: 0,
+            fc: color,             // Lottie text color is RGB array (no alpha)
+          },
+          t: 0,
+        }],
+      },
+      p: {},
+      m: { g: 1, a: { a: 0, k: [0, 0] } },
+      a: [],
+    },
+    ip: 0, op: TOTAL_FRAMES, st: 0, bm: 0,
+  };
+}
+
 export function haloLayer({ position, color, pulseStartFrame, pulseEndFrame, baseRadius = 200 }) {
   return {
     ddd: 0, ind: nextId(), ty: 4, nm: 'halo', sr: 1,

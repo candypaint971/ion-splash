@@ -5,6 +5,7 @@ import {
   resetLayerIds, backgroundLayer, strokeLayer, fillLayer,
   figureLayer, sparkLayer, haloLayer,
   gridLayer, lightningBoltLayer, shimmerLayer,
+  taglineLayer,
 } from './layers.js';
 
 resetLayerIds();
@@ -14,6 +15,16 @@ const CENTER = [W / 2, H / 2];
 const LOGO_SCALE = 312;
 const LETTER_POS = CENTER;
 const STRIKE_POS = CENTER;
+
+const TAGLINE_Y = 1240;
+const TAGLINE_PIECES = [
+  // "Charge " — left of italic
+  { text: 'Charge', font: 'Helvetica',         offset: -270 },
+  // "faster" — italic, in middle
+  { text: 'faster', font: 'Helvetica-Oblique', offset: -90  },
+  // "Drive longer" — right of italic
+  { text: 'Drive longer', font: 'Helvetica',   offset: 200  },
+];
 
 // Jagged lightning bolt from top center down to logo center.
 const LIGHTNING_VERTICES = [
@@ -28,6 +39,17 @@ const LIGHTNING_VERTICES = [
 ];
 
 const layers = [
+  // Tagline pieces — sit on top, fade in after the lightning charge completes
+  ...TAGLINE_PIECES.map(p => taglineLayer({
+    text: p.text,
+    font: p.font,
+    fontSize: 64,
+    color: COLORS.stroke,           // white text
+    position: [CENTER[0] + p.offset, TAGLINE_Y],
+    fadeStartFrame: sec(2.8),
+    fadeEndFrame: sec(3.4),
+  })),
+
   // Letter shimmers (subtle cyan electric pulse on the letter fills, after they appear)
   shimmerLayer({ name: 'figures-shimmer', path: PATH_O_INNER, color: COLORS.accent, position: LETTER_POS, scale: LOGO_SCALE, startFrame: sec(2.7) }),
   shimmerLayer({ name: 'N-shimmer', path: PATH_N, color: COLORS.accent, position: LETTER_POS, scale: LOGO_SCALE, startFrame: sec(2.7) }),
@@ -81,6 +103,12 @@ const lottie = {
   nm: 'ION Splash',
   ddd: 0,
   assets: [],
+  fonts: {
+    list: [
+      { fName: 'Helvetica',         fFamily: 'Helvetica', fStyle: 'Regular',  ascent: 75 },
+      { fName: 'Helvetica-Oblique', fFamily: 'Helvetica', fStyle: 'Oblique',  ascent: 75 },
+    ],
+  },
   layers,
   markers: [
     { tm: 0,            cm: 'reveal-start', dr: 0 },
