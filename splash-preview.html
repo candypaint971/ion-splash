@@ -116,7 +116,12 @@
       display: inline-block;
     }
     .tagline.visible { opacity: 1; }
-    .tagline .line { display: block; min-height: 1.15em; }
+    .tagline .line {
+      display: block;
+      min-height: 1.15em;
+      box-sizing: border-box;
+      text-align: left;
+    }
     /* Second line is offset to the right to mirror the app header style */
     .tagline .line.indent { padding-left: 1.6em; }
     /* Vibrant purple emphasis on "faster" */
@@ -235,11 +240,28 @@
     }
 
     let typingState = 'idle'; // 'idle' | 'typing' | 'done'
+    // Pre-fill the line with its final text, measure its rendered width,
+    // then clear it. We use that width as min-width so the centered tagline
+    // container doesn't jitter as characters are typed.
+    function lockLineWidth(lineEl, segments) {
+      lineEl.textContent = '';
+      for (const seg of segments) {
+        const wrapper = seg.em ? document.createElement('em') : document.createElement('span');
+        wrapper.textContent = seg.text;
+        lineEl.appendChild(wrapper);
+      }
+      const w = lineEl.offsetWidth;
+      lineEl.textContent = '';
+      lineEl.style.minWidth = w + 'px';
+    }
+
     async function runTyping() {
       if (typingState !== 'idle') return;
       typingState = 'typing';
       const l1 = document.getElementById('tag-line-1');
       const l2 = document.getElementById('tag-line-2');
+      lockLineWidth(l1, LINE_1);
+      lockLineWidth(l2, LINE_2);
       await typeInto(l1, LINE_1);
       await sleep(LINE_GAP_MS);
       await typeInto(l2, LINE_2);
