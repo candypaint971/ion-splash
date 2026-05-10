@@ -1,5 +1,5 @@
 export const FPS = 60;
-export const TOTAL_FRAMES = 270; // 4.5s at 60fps (2.5s reveal + 2s breathing loop)
+export const TOTAL_FRAMES = 360; // 6s at 60fps (3s reveal + 3s breathing loop)
 
 export const sec = (s) => Math.round(s * FPS);
 

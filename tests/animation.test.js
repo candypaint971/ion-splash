@@ -6,8 +6,8 @@ test('FPS is 60', () => {
   assert.equal(FPS, 60);
 });
 
-test('TOTAL_FRAMES covers 2.5s reveal + 2s loop = 4.5s', () => {
-  assert.equal(TOTAL_FRAMES, 270);
+test('TOTAL_FRAMES covers 3s reveal + 3s loop = 6s', () => {
+  assert.equal(TOTAL_FRAMES, 360);
 });
 
 test('sec() converts seconds to frames', () => {
