@@ -47,6 +47,25 @@ test('strokeLayer animates trim-path 0%→100% over the given frame range', () =
   assert.equal(trim.s.k[1].t, sec(0.4));
 });
 
+test('strokeLayer fades out when fadeOutAfterFrame is provided', () => {
+  const layer = strokeLayer({
+    name: 'O-stroke',
+    path: PATH_I,
+    color: COLORS.accent,
+    strokeWidth: 3,
+    drawStartFrame: sec(0.8),
+    drawEndFrame: sec(1.4),
+    fadeOutAfterFrame: sec(2.0),
+    fadeOutFrames: 12,
+  });
+  assert.equal(layer.ks.o.a, 1);
+  const k = layer.ks.o.k;
+  assert.equal(k[0].s[0], 100);
+  assert.equal(k[k.length - 1].s[0], 0);
+  assert.equal(k[1].t, sec(2.0));
+  assert.equal(k[2].t, sec(2.0) + 12);
+});
+
 test('fillLayer fades opacity 0→100 over a transition window', () => {
   const layer = fillLayer({
     name: 'I-fill',

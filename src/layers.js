@@ -33,7 +33,17 @@ export function backgroundLayer({ width, height, color }) {
   };
 }
 
-export function strokeLayer({ name, path, color, strokeWidth, drawStartFrame, drawEndFrame, position = [540, 960], scale = 100 }) {
+export function strokeLayer({ name, path, color, strokeWidth, drawStartFrame, drawEndFrame, position = [540, 960], scale = 100, fadeOutAfterFrame = null, fadeOutFrames = 12 }) {
+  const opacity = fadeOutAfterFrame == null
+    ? { a: 0, k: 100 }
+    : {
+        a: 1,
+        k: [
+          { t: drawStartFrame,                       s: [100] },
+          { t: fadeOutAfterFrame,                    s: [100] },
+          { t: fadeOutAfterFrame + fadeOutFrames,    s: [0] },
+        ],
+      };
   return {
     ddd: 0,
     ind: nextId(),
@@ -41,7 +51,7 @@ export function strokeLayer({ name, path, color, strokeWidth, drawStartFrame, dr
     nm: name,
     sr: 1,
     ks: {
-      o: { a: 0, k: 100 },
+      o: opacity,
       r: { a: 0, k: 0 },
       p: { a: 0, k: [position[0], position[1], 0] },
       a: { a: 0, k: [86.65, 36.875, 0] },
