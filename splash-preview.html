@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ION Splash — Preview</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #0F0A2E; color: #fff; }
+    .stage { position: relative; display: flex; align-items: center; justify-content: center; height: 80vh; }
+    .stage.light { background: #ffffff; }
+    #anim { width: min(360px, 80vw); aspect-ratio: 1080 / 1920; }
+    .tagline {
+      position: absolute;
+      left: 50%;
+      top: 70%;
+      transform: translate(-50%, -50%);
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: clamp(18px, 3vw, 28px);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.6s ease-out;
+      pointer-events: none;
+      text-shadow: 0 0 20px rgba(123, 63, 228, 0.5);
+    }
+    .tagline.visible { opacity: 1; }
+    .tagline em { font-style: italic; font-weight: 500; }
+    .stage.light .tagline { color: #1d1645; text-shadow: none; }
+    .controls { padding: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: #000; }
+    button { padding: 8px 14px; border: 1px solid #444; background: #1d1645; color: #fff; border-radius: 6px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #2a2058; }
+    input[type=range] { flex: 1; min-width: 200px; }
+    label { font-size: 14px; opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <div id="anim"></div>
+    <div class="tagline" id="tagline">Charge <em>faster</em> Drive longer</div>
+  </div>
+  <div class="controls">
+    <button id="play">Play</button>
+    <button id="pause">Pause</button>
+    <button id="restart">Restart</button>
+    <button id="bg-toggle">Toggle background</button>
+    <label>Frame: <span id="frame">0</span></label>
+    <input type="range" id="scrub" min="0" max="270" value="0" step="1" />
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+  <script>
+    const anim = lottie.loadAnimation({
+      container: document.getElementById('anim'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: './splash.json',
+    });
+
+    document.getElementById('play').onclick    = () => anim.play();
+    document.getElementById('pause').onclick   = () => anim.pause();
+    document.getElementById('restart').onclick = () => { anim.goToAndStop(0, true); anim.play(); };
+
+    const stage = document.getElementById('stage');
+    document.getElementById('bg-toggle').onclick = () => stage.classList.toggle('light');
+
+    const scrub = document.getElementById('scrub');
+    const frameLabel = document.getElementById('frame');
+    anim.addEventListener('DOMLoaded', () => {
+      scrub.max = anim.totalFrames;
+    });
+    anim.addEventListener('enterFrame', (e) => {
+      scrub.value = Math.round(e.currentTime);
+      frameLabel.textContent = Math.round(e.currentTime);
+    });
+    anim.addEventListener('enterFrame', (e) => {
+      const tagline = document.getElementById('tagline');
+      if (e.currentTime >= 110) tagline.classList.add('visible');
+      else tagline.classList.remove('visible');
+    });
+    scrub.addEventListener('input', () => {
+      anim.goToAndStop(Number(scrub.value), true);
+      frameLabel.textContent = scrub.value;
+    });
+  </script>
+</body>
+</html>

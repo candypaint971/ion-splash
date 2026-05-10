@@ -60,7 +60,7 @@ const layers = [
   figureLayer({ name: 'inner-figures', path: PATH_O_INNER, color: COLORS.background, appearStartFrame: sec(1.05), appearEndFrame: sec(1.4), position: LETTER_POS, scale: LOGO_SCALE }),
 
   // Background grid (above background, below everything else)
-  gridLayer({ width: W, height: H, spacing: 80, color: COLORS.accent, lineWidth: 1, baseOpacity: 8, peakOpacity: 22, pulseDuration: 240 }),
+  gridLayer({ width: W, height: H, spacing: 80, color: COLORS.accent, lineWidth: 1.5, baseOpacity: 18, peakOpacity: 38, pulseDuration: 240 }),
 
   // Solid background
   backgroundLayer({ width: W, height: H, color: COLORS.background }),
