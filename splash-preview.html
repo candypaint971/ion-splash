@@ -98,7 +98,7 @@
     .tagline {
       position: absolute;
       left: 50%;
-      top: 60%;
+      top: calc(60% + 20px);
       transform: translate(-50%, -50%);
       color: #ffffff;
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -138,7 +138,7 @@
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 24px;
+      bottom: 42px;
       text-align: center;
       color: rgba(255, 255, 255, 0.3);
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -149,6 +149,22 @@
       z-index: 4;
     }
     .stage.light .app-version { color: rgba(29, 22, 69, 0.4); }
+    .credit {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 16px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.22);
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: clamp(9px, 1vw, 11px);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      pointer-events: none;
+      z-index: 4;
+    }
+    .credit .heart { color: #FF5C8A; opacity: 0.9; }
+    .stage.light .credit { color: rgba(29, 22, 69, 0.35); }
 
     .controls { padding: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: #000; }
     button { padding: 8px 14px; border: 1px solid #444; background: #1d1645; color: #fff; border-radius: 6px; cursor: pointer; font-size: 14px; }
@@ -181,6 +197,7 @@
       <span class="line indent" id="tag-line-2"></span>
     </div>
     <div class="app-version">v1.0.0</div>
+    <div class="credit">Built with <span class="heart">&hearts;</span> in the UAE</div>
   </div>
   <div class="controls">
     <button id="play">Play</button>
@@ -202,7 +219,6 @@
 
     document.getElementById('play').onclick    = () => anim.play();
     document.getElementById('pause').onclick   = () => anim.pause();
-    document.getElementById('restart').onclick = () => { anim.goToAndStop(0, true); anim.play(); };
 
     const stage = document.getElementById('stage');
     document.getElementById('bg-toggle').onclick = () => stage.classList.toggle('light');
@@ -239,7 +255,6 @@
       document.getElementById('tag-line-2').textContent = '';
     }
 
-    let typingState = 'idle'; // 'idle' | 'typing' | 'done'
     // Pre-fill the line with its final text, measure its rendered width,
     // then clear it. We use that width as min-width so the centered tagline
     // container doesn't jitter as characters are typed.
@@ -255,37 +270,45 @@
       lineEl.style.minWidth = w + 'px';
     }
 
+    // One-shot reveal: logo fills once, tagline types once. The Lottie keeps
+    // looping (background grid pulse), but the logo + tagline never replay.
+    let logoTriggered = false;
+    let typingTriggered = false;
+
     async function runTyping() {
-      if (typingState !== 'idle') return;
-      typingState = 'typing';
+      if (typingTriggered) return;
+      typingTriggered = true;
       const l1 = document.getElementById('tag-line-1');
       const l2 = document.getElementById('tag-line-2');
       lockLineWidth(l1, LINE_1);
       lockLineWidth(l2, LINE_2);
+      document.getElementById('tagline').classList.add('visible');
       await typeInto(l1, LINE_1);
       await sleep(LINE_GAP_MS);
       await typeInto(l2, LINE_2);
-      typingState = 'done';
     }
 
-    // ---- Lottie frame listener: fill animation + typing trigger -----------
+    // Restart button on the dev preview re-runs the one-shot reveal
+    document.getElementById('restart').onclick = () => {
+      logoTriggered = false;
+      typingTriggered = false;
+      clearTagline();
+      document.getElementById('tagline').classList.remove('visible');
+      document.getElementById('logo').classList.remove('visible');
+      anim.goToAndStop(0, true);
+      anim.play();
+    };
+
+    // ---- Lottie frame listener: triggers the one-shot reveal --------------
     anim.addEventListener('enterFrame', (e) => {
       scrub.value = Math.round(e.currentTime);
       frameLabel.textContent = Math.round(e.currentTime);
 
-      const logo = document.getElementById('logo');
-      // Logo fill rises from bottom to top after a brief "empty" beat
-      logo.classList.toggle('visible', e.currentTime >= 18);
-
-      // Reset typing on loop restart
-      if (e.currentTime < TYPE_TRIGGER_FRAME && typingState !== 'idle') {
-        typingState = 'idle';
-        clearTagline();
-        document.getElementById('tagline').classList.remove('visible');
+      if (!logoTriggered && e.currentTime >= 18) {
+        logoTriggered = true;
+        document.getElementById('logo').classList.add('visible');
       }
-      // Trigger typing once
-      if (e.currentTime >= TYPE_TRIGGER_FRAME && typingState === 'idle') {
-        document.getElementById('tagline').classList.add('visible');
+      if (!typingTriggered && e.currentTime >= TYPE_TRIGGER_FRAME) {
         runTyping();
       }
     });

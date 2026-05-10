@@ -103,7 +103,7 @@
     .tagline {
       position: absolute;
       left: 50%;
-      top: 60%;
+      top: calc(60% + 20px);
       transform: translate(-50%, -50%);
       color: #ffffff;
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -139,7 +139,7 @@
       position: absolute;
       left: 0;
       right: 0;
-      bottom: max(24px, env(safe-area-inset-bottom));
+      bottom: calc(max(24px, env(safe-area-inset-bottom)) + 18px);
       text-align: center;
       color: rgba(255, 255, 255, 0.3);
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -149,6 +149,21 @@
       pointer-events: none;
       z-index: 4;
     }
+    .credit {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: max(8px, env(safe-area-inset-bottom));
+      text-align: center;
+      color: rgba(255, 255, 255, 0.22);
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: clamp(9px, 1vw, 11px);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      pointer-events: none;
+      z-index: 4;
+    }
+    .credit .heart { color: #FF5C8A; opacity: 0.9; }
   </style>
 </head>
 <body>
@@ -173,6 +188,7 @@
       <span class="line indent" id="tag-line-2"></span>
     </div>
     <div class="app-version">v1.0.0</div>
+    <div class="credit">Built with <span class="heart">&hearts;</span> in the UAE</div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
   <script>
@@ -221,31 +237,30 @@
       lineEl.style.minWidth = w + 'px';
     }
 
-    let typingState = 'idle';
+    // One-shot reveal: logo fills once, tagline types once. The Lottie loops in
+    // the background (grid pulse) but the logo + tagline never replay.
+    let logoTriggered = false;
+    let typingTriggered = false;
+
     async function runTyping() {
-      if (typingState !== 'idle') return;
-      typingState = 'typing';
+      if (typingTriggered) return;
+      typingTriggered = true;
       const l1 = document.getElementById('tag-line-1');
       const l2 = document.getElementById('tag-line-2');
       lockLineWidth(l1, LINE_1);
       lockLineWidth(l2, LINE_2);
+      document.getElementById('tagline').classList.add('visible');
       await typeInto(l1, LINE_1);
       await sleep(LINE_GAP_MS);
       await typeInto(l2, LINE_2);
-      typingState = 'done';
     }
 
     anim.addEventListener('enterFrame', (e) => {
-      const logo = document.getElementById('logo');
-      logo.classList.toggle('visible', e.currentTime >= 18);
-
-      if (e.currentTime < TYPE_TRIGGER_FRAME && typingState !== 'idle') {
-        typingState = 'idle';
-        clearTagline();
-        document.getElementById('tagline').classList.remove('visible');
+      if (!logoTriggered && e.currentTime >= 18) {
+        logoTriggered = true;
+        document.getElementById('logo').classList.add('visible');
       }
-      if (e.currentTime >= TYPE_TRIGGER_FRAME && typingState === 'idle') {
-        document.getElementById('tagline').classList.add('visible');
+      if (!typingTriggered && e.currentTime >= TYPE_TRIGGER_FRAME) {
         runTyping();
       }
     });
