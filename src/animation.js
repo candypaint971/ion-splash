@@ -15,7 +15,8 @@ export const hexToRgb = (hex) => {
 export const COLORS = {
   background: hexToRgb('#0F0A2E'),
   stroke: hexToRgb('#FFFFFF'),
-  accent: hexToRgb('#00E5FF'),
+  accent: hexToRgb('#7B3FE4'),       // brand purple (mid of the gradient)
+  accentBright: hexToRgb('#A855F7'), // brighter magenta-purple for highlights
 };
 
 // Premium ease: cubic-bezier(0.65, 0, 0.35, 1) → Lottie keyframe easing

@@ -44,7 +44,7 @@ const layers = [
   // Lightning bolt
   lightningBoltLayer({
     vertices: LIGHTNING_VERTICES,
-    color: COLORS.stroke,
+    color: COLORS.accentBright,
     glowColor: COLORS.accent,
     drawStartFrame: sec(0.4),
     drawEndFrame: sec(0.8),

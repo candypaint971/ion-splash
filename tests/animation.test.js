@@ -28,4 +28,5 @@ test('COLORS has all spec colors', () => {
   assert.ok(COLORS.background);
   assert.ok(COLORS.stroke);
   assert.ok(COLORS.accent);
+  assert.ok(COLORS.accentBright);
 });
