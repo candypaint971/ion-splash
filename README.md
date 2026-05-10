@@ -43,14 +43,15 @@ Pushed to `main` auto-deploys to Vercel (any static host works — there is no b
 
 If you want to host elsewhere: copy `index.html`, `splash.json`, and `assets/` to any static host. That's all that's required at runtime.
 
-## Mobile integration
+## Mobile integration (React Native)
 
-To use this in the actual ION mobile app, the recommended pattern is:
+The complete handoff bundle for the mobile app lives in [`mobile/`](mobile/):
 
-1. Display `assets/station.jpg` as a full-screen background with the gradient overlay applied in native code (matches the CSS in `index.html`).
-2. Render the original ION SVG (`assets/ion-logo.svg`) as a vector asset, with a clip-path animation revealing it bottom-to-top over ~2.4s.
-3. Play `splash.json` on top via the platform Lottie runtime (`lottie-ios`, `lottie-android`, `lottie-react-native`) — it's only 5 KB and contributes the background grid pulse.
-4. Render the tagline as native text using the Manrope font, with the typewriter effect implemented in your platform's animation framework.
-5. Show the app version from the build manifest.
+- [`mobile/IonSplash.tsx`](mobile/IonSplash.tsx) — drop-in TypeScript component, no rewrite needed
+- [`mobile/SPEC.md`](mobile/SPEC.md) — colors, fonts, timings, layout
+- [`mobile/README.md`](mobile/README.md) — install steps, props, native-launch-screen coordination
+- [`mobile/splash.json`](mobile/splash.json) + [`mobile/assets/`](mobile/assets/) — runtime assets, with the station photo pre-resized for `@1x`/`@2x`/`@3x`
 
-Keeping the logo and tagline native gives crisper text rendering, easier localization, and lets you adjust per device without re-exporting Lottie.
+Hand the engineer the `mobile/` folder and [`mobile/README.md`](mobile/README.md) — that has everything needed to install dependencies and drop `<IonSplash />` into the app.
+
+Why the split: the logo and tagline are rendered natively (crisper text, easier localization, runtime overrides) while the background grid pulse plays via Lottie. Keeps the binary tiny and the brand text editable without re-exporting from After Effects.
